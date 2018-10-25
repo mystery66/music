@@ -1,0 +1,47 @@
+.listitem {
+	height: 36px;
+	line-height: 36px;
+	border-bottom: 1px solid #ddd;
+	text-indent: 10px;
+  cursor: pointer;
+}
+	.delete {
+		cursor: pointer;
+		height: 30px;
+		width: 30px;
+		bottom: 45px;
+		position: relative;
+		transform: rotate(45deg);
+    margin-left: 97%;
+    display: inline-block;
+  }
+		.delete::before, .delete::after{
+			content: '';
+			display: block;
+			background: #666;
+			position: absolute;
+		}
+		.delete::before {
+			width: 100%;
+			height: 1px;
+			top: 14px;
+			left: 0;
+		}
+		.delete::after {
+			height: 100%;
+			width: 1px;
+			left: 15px;
+			top: 0;
+		}
+	
+
+    .listitem.focus {
+		color: #2f9842;
+	}
+
+.listitem:hover {
+	background: #eee;
+}
+ul,li {
+  list-style: none;
+}
