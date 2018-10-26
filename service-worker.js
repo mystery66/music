@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/music/tree/master/music-player/precache-manifest.86ff9a8e69c6cf526cef1aab95a25c71.js"
+  "/music/precache-manifest.98f48b6f657d9f189bd9f1d5de6c5d50.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/music/tree/master/music-player/index.html", {
+workbox.routing.registerNavigationRoute("/music/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
