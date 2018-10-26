@@ -22,7 +22,7 @@ class App extends Component {
     console.log(musicItem);
     $('#player').jPlayer('setMedia',{
       mp3: musicItem.file
-    }).jPlayer('player');
+    }).jPlayer('play');
     this.setState({
       currentMusicList: musicItem
     })
@@ -68,18 +68,16 @@ class App extends Component {
     $('#player').unbind($.jPlayer.event.ended);
   }
   render() {
-    var self = this;
+  
    
-    const Players = () => (
-			<Player  musiclist={self.state.musiclist} currentMusicList={self.state.currentMusicList} />
-		);
+   
     return (
-      <Router>
+      
         <div className="app">
          <Header/>
-         <Route path="/" component={Players}/>
+         <Player  musiclist={this.state.musiclist} currentMusicList={this.state.currentMusicList} />
         </div>
-     </Router>
+     
     );
   }
 }
