@@ -2,27 +2,35 @@ import React,{ Component } from 'react'
 import Process from '../components/Process/Process'
 import $ from 'jquery'
 import jPlayer from 'jplayer'
-import { Router,Link } from 'react-router-dom';
 import './player.css'
+import Pubsub from 'pubsub-js'
 
+let duration= null
 class  Player extends Component {
   constructor (props) {
     super(props);
     this.state = {
       process: 0,
-			duration: null,
 			isPlay: true,
-			volume: 0
+			volume: 0,
+			leftTime: ''
      
     }
-  }
+	}
+	formateTime(time) {
+		time = Math.floor(time);
+		let miniutes =Math.floor(time/60);
+		let seconds = Math.floor(time/60);
+		seconds = seconds < 10 ? `0${seconds}`:seconds;
+		return `${miniutes}:${seconds}`
+	}
   componentDidMount(){
-    console.log(1);
-   $('#player').bind($.jPlayer.event.timeupdate, (e)=> {
-     this.state.duration = e.jPlayer.status.duration;
+    $('#player').bind($.jPlayer.event.timeupdate, (e)=> {
+     duration = e.jPlayer.status.duration;
      this.setState({
 			 volume: e.jPlayer.options.volume * 100,
-       process:e.jPlayer.status.currentPercentAbsolute
+			 process:e.jPlayer.status.currentPercentAbsolute,
+			 leftTime: this.formateTime(duration * (1-e.jPlayer.status.currentPercentAbsolute/100))
      });
    })
   }
@@ -30,14 +38,11 @@ class  Player extends Component {
     $('#player').unbind($.jPlayer.event.timeupdate);
   }
   processChangeHandler= (p) => {
-    
-    $('#player').jPlayer('play', this.state.duration * p)
+    $('#player').jPlayer('play', duration * p)
     this.setState({
       process: p
     })
- 
- 
-	}
+ }
 	changeVolumeHandlers = (p) => {
 		console.log('ppppp'+p);
 		$('#player').jPlayer('volume', p)
@@ -55,6 +60,15 @@ class  Player extends Component {
 		
 	 }
 	}
+	prev=(e) => {
+		console.log(e)
+		Pubsub.publish('PREV');
+	
+	}
+	next=(e) => {
+    Pubsub.publish('NEXT');
+	}
+
   render() {
     return (
       <div className="player-page">
@@ -66,7 +80,7 @@ class  Player extends Component {
             <h2 className="music-title">{this.props.currentMusicList.title}</h2>
             <h3 className="music-artist mt10">{this.props.currentMusicList.artist}</h3>
             <div className="row mt20">
-              <div className="left-time -col-auto">-2:00</div>
+              <div className="left-time -col-auto">-{this.state.leftTime}</div>
               <div className="volume-container">
                 <i className="icon iconfont icon-laba rt" style={{top: 5, left: -5}}></i>
                 <div className="volume-wrapper">
@@ -83,9 +97,9 @@ class  Player extends Component {
 	              <i className={`icon iconfont  icon-${this.state.isPlay ? 'bofang' : 'zanting'} ml20`} onClick={this.play.bind(this)}></i>
 	              <i className="icon iconfont icon-fanhui1 ml20" onClick={this.next}></i>
               </div>
-              <div className="-col-auto">
+              {/* <div className="-col-auto">
                 <i className={`icon repeat-${this.props.repeatType}`} onClick={this.changeRepeat}></i>
-              </div>
+              </div> */}
             </div>
           </div>
         <div className="song-pic cover">
