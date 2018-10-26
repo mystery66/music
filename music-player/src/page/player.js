@@ -2,35 +2,28 @@ import React,{ Component } from 'react'
 import Process from '../components/Process/Process'
 import $ from 'jquery'
 import jPlayer from 'jplayer'
+import { Router,Link } from 'react-router-dom';
 import './player.css'
 import Pubsub from 'pubsub-js'
-
-let duration= null
 class  Player extends Component {
   constructor (props) {
     super(props);
     this.state = {
       process: 0,
+			duration: null,
 			isPlay: true,
 			volume: 0,
 			leftTime: ''
      
     }
-	}
-	formateTime(time) {
-		time = Math.floor(time);
-		let miniutes =Math.floor(time/60);
-		let seconds = Math.floor(time/60);
-		seconds = seconds < 10 ? `0${seconds}`:seconds;
-		return `${miniutes}:${seconds}`
-	}
+  }
   componentDidMount(){
     $('#player').bind($.jPlayer.event.timeupdate, (e)=> {
-     duration = e.jPlayer.status.duration;
+     this.state.duration = e.jPlayer.status.duration;
      this.setState({
 			 volume: e.jPlayer.options.volume * 100,
 			 process:e.jPlayer.status.currentPercentAbsolute,
-			 leftTime: this.formateTime(duration * (1-e.jPlayer.status.currentPercentAbsolute/100))
+			 leftTime: this.formateTime(this.state.duration * (1-e.jPlayer.status.currentPercentAbsolute/100))
      });
    })
   }
@@ -38,7 +31,7 @@ class  Player extends Component {
     $('#player').unbind($.jPlayer.event.timeupdate);
   }
   processChangeHandler= (p) => {
-    $('#player').jPlayer('play', duration * p)
+    $('#player').jPlayer('play', this.state.duration * p)
     this.setState({
       process: p
     })
@@ -51,24 +44,32 @@ class  Player extends Component {
 		})
 	}
   play(){
+		
    if(this.state.isPlay) {
 		 $('#player').jPlayer('pause');
-		 this.state.isPlay = false;
-	 } else {
+		} else {
 		$('#player').jPlayer('play');
-		this.state.isPlay = true;
-		
+		console.log(this.state.isPlay)
 	 }
+	 this.setState({
+		isPlay: !this.state.isPlay
+	})
 	}
-	prev=(e) => {
-		console.log(e)
+	prev=() => {
+		
 		Pubsub.publish('PREV');
 	
 	}
-	next=(e) => {
+	next=() => {
     Pubsub.publish('NEXT');
 	}
-
+	formateTime(time) {
+		time = Math.floor(time);
+		let miniutes =Math.floor(time/60);
+		let seconds = Math.floor(time/60);
+		seconds = seconds < 10 ? `0${seconds}`:seconds;
+		return `${miniutes}:${seconds}`
+	}
   render() {
     return (
       <div className="player-page">
