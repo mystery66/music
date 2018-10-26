@@ -24,7 +24,9 @@
 	.volume-container {
 		position: relative;
 		left: 20px;
-		top: -3px;
+    top: -3px;
+    display: flex;
+    align-items:center;
 	}
 	.volume-container .volume-wrapper {
 		opacity: 0;
