@@ -2,58 +2,84 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header'
-import Process from './components/Process/Process'
+import Player from './page/player'
 import $ from 'jquery'
 import jPlayer from 'jplayer'
+import { MUSIC_LIST } from './config/musiclist'
 
-// let duration = null
+import { BrowserRouter as Router, Route} from 'react-router-dom'
+import Pubsub from 'pubsub-js'
+
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      process: '',
-      duration: null
-     
+      musiclist: MUSIC_LIST,
+      currentMusicList: MUSIC_LIST[0] 
     }
   }
+  playMusic(musicItem) {
+    console.log(musicItem);
+    $('#player').jPlayer('setMedia',{
+      mp3: musicItem.file
+    }).jPlayer('player');
+    this.setState({
+      currentMusicList: musicItem
+    })
+  }
+  playnext(type) {
+    let index = this.findMusicIndex(this.state.currentMusicList)
+    let newIndex = null;
+    let musicListLen = this.state.musiclist.length; 
+    if(type === 'next') {
+      newIndex = (index +1)%musicListLen; //下一曲
+
+    } else {
+      newIndex = (index - 1 + musicListLen)%musicListLen
+    }
+    this.playMusic(this.state.musiclist[newIndex]);
+  }
+  findMusicIndex(musicItem) {
+    return this.state.musiclist.indexOf(musicItem);
+  }
   componentDidMount(){
-    console.log(1);
-   $('#player').jPlayer({
+    $('#player').jPlayer({
      ready: function () {
-       
        $(this).jPlayer('setMedia', {
-         'mp3': 'http://oj4t8z2d5.bkt.clouddn.com/%E6%88%90%E9%83%BD.mp3'
+         'mp3': 'http://oj4t8z2d5.bkt.clouddn.com/%E9%AD%94%E9%AC%BC%E4%B8%AD%E7%9A%84%E5%A4%A9%E4%BD%BF.mp3'
        }).jPlayer('play');
      },
      supplied: 'mp3',
      wmode: 'window'
    });
-   $('#player').bind($.jPlayer.event.timeupdate, (e)=> {
-     this.state.duration = e.jPlayer.status.duration;
-     this.setState({
-       process:e.jPlayer.status.currentPercentAbsolute
-     });
+   $('#player').bind($.jPlayer.event.ended, (e) => {
+     this.playnext()
+   })
+   Pubsub.subscribe('PREV',(msg,musicItem) =>{
+     this.playnext('prev');
+   })
+   Pubsub.subscribe('NEXT',(msg,musicItem) =>{
+    this.playnext('next');
    })
   }
   componentWillUnmount() {
-    $('#player').unbind($.jPlayer.event.timeupdate);
-  }
-  processChangeHandler= (p) => {
-    
-    $('#player').jPlayer('play', this.state.duration * p)
-    this.setState({
-      process: p
-    })
- 
- 
+    Pubsub.unsubscribe('PREV')
+    Pubsub.unsubscribe('NEXT')
+    $('#player').unbind($.jPlayer.event.ended);
   }
   render() {
+    var self = this;
+   
+    const Players = () => (
+			<Player  musiclist={self.state.musiclist} currentMusicList={self.state.currentMusicList} />
+		);
     return (
-      <div className="app">
-        <Header/>
-         <Process process={this.state.process} onProcessChange={this.processChangeHandler} barColor='#ff0000'></Process>
-         <div id="player"></div>
-      </div>
+      <Router>
+        <div className="app">
+         <Header/>
+         <Route path="/" component={Players}/>
+        </div>
+     </Router>
     );
   }
 }
