@@ -1,13 +1,13 @@
 {
   "main.css": "/music/static/css/main.efc49412.chunk.css",
-  "main.js": "/music/static/js/main.71583f83.chunk.js",
-  "main.js.map": "/music/static/js/main.71583f83.chunk.js.map",
+  "main.js": "/music/static/js/main.058f1c96.chunk.js",
+  "main.js.map": "/music/static/js/main.058f1c96.chunk.js.map",
   "static/js/1.3b48b60c.chunk.js": "/music/static/js/1.3b48b60c.chunk.js",
   "static/js/1.3b48b60c.chunk.js.map": "/music/static/js/1.3b48b60c.chunk.js.map",
   "runtime~main.js": "/music/static/js/runtime~main.5604c427.js",
   "runtime~main.js.map": "/music/static/js/runtime~main.5604c427.js.map",
   "static/css/main.efc49412.chunk.css.map": "/music/static/css/main.efc49412.chunk.css.map",
   "index.html": "/music/index.html",
-  "precache-manifest.73554693a4224e906eb29122c4e3d5fd.js": "/music/precache-manifest.73554693a4224e906eb29122c4e3d5fd.js",
+  "precache-manifest.f24ba0f1e7938424bfc984090b53d651.js": "/music/precache-manifest.f24ba0f1e7938424bfc984090b53d651.js",
   "service-worker.js": "/music/service-worker.js"
 }
