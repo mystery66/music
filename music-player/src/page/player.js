@@ -5,12 +5,14 @@ import jPlayer from 'jplayer'
 import { Router,Link } from 'react-router-dom';
 import './player.css'
 import Pubsub from 'pubsub-js'
+
+let duration = null
 class  Player extends Component {
   constructor (props) {
     super(props);
     this.state = {
       process: 0,
-			duration: null,
+			// duration: null,
 			isPlay: true,
 			volume: 0,
 			leftTime: ''
@@ -19,11 +21,11 @@ class  Player extends Component {
   }
   componentDidMount(){
     $('#player').bind($.jPlayer.event.timeupdate, (e)=> {
-     this.state.duration = e.jPlayer.status.duration;
+     duration = e.jPlayer.status.duration;
      this.setState({
 			 volume: e.jPlayer.options.volume * 100,
 			 process:e.jPlayer.status.currentPercentAbsolute,
-			 leftTime: this.formateTime(this.state.duration * (1-e.jPlayer.status.currentPercentAbsolute/100))
+			 leftTime: this.formateTime(duration * (1-e.jPlayer.status.currentPercentAbsolute/100))
      });
    })
   }
@@ -31,7 +33,7 @@ class  Player extends Component {
     $('#player').unbind($.jPlayer.event.timeupdate);
   }
   processChangeHandler= (p) => {
-    $('#player').jPlayer('play', this.state.duration * p)
+    $('#player').jPlayer('play',duration * p)
     this.setState({
       process: p
     })
@@ -43,7 +45,7 @@ class  Player extends Component {
 			volume: p
 		})
 	}
-  play(){
+  play = () =>{
 		
    if(this.state.isPlay) {
 		 $('#player').jPlayer('pause');
@@ -64,10 +66,10 @@ class  Player extends Component {
     Pubsub.publish('NEXT');
 	}
 	formateTime(time) {
-		time = Math.floor(time);
-		let miniutes =Math.floor(time/60);
-		let seconds = Math.floor(time/60);
-		seconds = seconds < 10 ? `0${seconds}`:seconds;
+    time = Math.floor(time);
+    let miniutes =Math.floor(time/60);
+    let seconds = Math.floor(time%60);
+    seconds = seconds < 10 ? `0${seconds}`:seconds;
 		return `${miniutes}:${seconds}`
 	}
   render() {
@@ -95,7 +97,7 @@ class  Player extends Component {
             <div className="player-content">
               <div>
 	              <i className="icon iconfont icon-fanhui prev" onClick={this.prev}></i>
-	              <i className={`icon iconfont  icon-${this.state.isPlay ? 'bofang' : 'zanting'} ml20`} onClick={this.play.bind(this)}></i>
+	              <i className={`icon iconfont  icon-${this.state.isPlay ? 'bofang' : 'zanting'} ml20`} onClick={this.play}></i>
 	              <i className="icon iconfont icon-fanhui1 ml20" onClick={this.next}></i>
               </div>
               {/* <div className="-col-auto">
